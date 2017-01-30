@@ -68,13 +68,14 @@ RESET ;Reset $T and Naked Reference
  S XVV("$T")=$T
  I '$G(XVV("OS")) D OS^XVEMKY
  Q:'$G(XVV("OS"))
- I XVV("OS")=17!(XVV("OS")=19) D  I 1 ;GTM Mumps
+ I XVV("OS")=17!(XVV("OS")=19)!(XVV("OS")=20) D  I 1 ;GTM,MV1
  . X "I $R'[""^XVEMS"",$R'[""^TMP(""""XVV"""""" S XVV(""$ZR"")=$R"
  E  D  ;Non-GTM Mumps
  . X "I $ZR'[""^XVEMS"",$ZR'[""^TMP(""""XVV"""""" S XVV(""$ZR"")=$ZR"
  Q
  ;
 ERROR ;Error trap.
+ W "ERROR: "_$ST($ST-1,"PLACE")_": "_$ST($ST-1,"MCODE"),!!
  ;
  ; Replace Old Trap with an emergency trap. Don't New $ET
  ; b/c we don't want the old one restored when erroring again
@@ -99,7 +100,7 @@ ERROR ;Error trap.
  S ^XVEMS("ERROR",XVV("ID"))=$P($H,",",1)_"^"_$P($H,",",2)_"^"_ZE
  I XVV("ID")=0 G UNWIND
  ;
- I XVV("OS")=17!(XVV("OS")=19) D  I 1 ;GTM Mumps
+ I XVV("OS")=17!(XVV("OS")=19)!(XVV("OS")=20) D  I 1 ;GTM Mumps/MV1
  . X "I $R'[""^XVEMS"",$R'[""^TMP(""""XVV"""""" S XVV(""$ZR"")=$R"
  . X "I $R[""^%ZOSF(""""UCI"""")"" S XVV(""$ZR"")="""""
  E  D  ;Non-GTM Mumps
@@ -141,6 +142,8 @@ UNWIND1 ;
  QUIT
  ;
 EERROR ; Emergency Error Trap
+ W "ERROR: "_$ST($ST-1,"PLACE")_": "_$ST($ST-1,"MCODE"),!!
+ ;
  W !!,"The emergency error trap was invoked.",!
  W "Consult your nearest VPE Expert!",!!
  W "Waiting 5 seconds before closing!"
