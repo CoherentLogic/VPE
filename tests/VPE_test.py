@@ -267,7 +267,6 @@ class VPEUnitTests(unittest.TestCase):
         self.vista.write(' W "BYE VPE",!')
         self.vista.write(' QUIT')
         self.vista.wait('T')
-        self.vista.writectrl(chr(27) + chr(27)) # Cancel line
         self.vista.writectrl(chr(27) + chr(27)) # Exit
         self.vista.wait('Save your changes?')
         self.vista.write('')
@@ -369,23 +368,6 @@ class VPEUnitTests(unittest.TestCase):
 
 
         self.vista.writectrl(chr(27) + 'OS' + chr(27) + '[C') # F4 Right Arrow - Go to end
-        self.vista.wait('<> <> <>')
-        self.vista.write(chr(9) + 'CALL') # Goto
-        self.vista.wait('**INSERT PROGRAMMER CALL***')
-        self.vista.write('DBS DIC $$FIND')
-        self.vista.wait('Delete previous values?')
-        self.vista.write('')
-        self.vista.wait('CONSTRUCT & INSERT PROGRAMMER CALL')
-        self.vista.writectrl('1' + chr(9))
-        self.vista.wait('H=Help')
-        self.vista.write('')
-        self.vista.writectrl('1,' + chr(9))
-        self.vista.wait('H=Help')
-        self.vista.write('')
-        self.vista.writectrl('PX')
-        self.vista.writectrl(chr(27) + 'OPE') # F1-E to save and exit
-        self.vista.wait('Insert this Call into your routine?')
-        self.vista.write('')
         self.vista.wait('<> <> <>')
 
         self.vista.write(chr(9) + 'I') # Run XINDEX
@@ -529,9 +511,9 @@ class VPEUnitTests(unittest.TestCase):
         self.vista.write('D R^XVEMG')
         self.vista.wait('Global')
         self.vista.write('VA(200,')
-        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '.5 ' + chr(27))
-        #self.vista.write('S2') # Skip down until the second sub changes
-        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '1 ' + chr(27))
+        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '.5 ' + chr(27) + '[m,0)')
+        self.vista.write('S2') # Skip down until the second sub changes
+        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '1 ' + chr(27) + '[m,0)')
 
         self.vista.write('C') # Command search will fail
         self.vista.wait('You don\'t have access.')
@@ -541,13 +523,13 @@ class VPEUnitTests(unittest.TestCase):
         self.vista.write('?') # Help
         self.vista.wait('left hand column')
         self.vista.writectrl(chr(27) + chr(27)) # Go back
-        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '1 ' + chr(27))
+        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '2 ' + chr(27) + '[m,0)')
 
         self.vista.write('M') # More...
         self.vista.wait('Call VGL at R^XVEMG to display subscript')
         self.assertTrue(self.vista.wait('<RETURN>'))
         self.vista.write('')
-        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '1 ' + chr(27))
+        self.vista.wait('^VA(200,' + chr(27) + '[7m ' + '2 ' + chr(27) + '[m,0)')
         
 
         # Exit Session 1
@@ -1025,26 +1007,28 @@ class VPEUnitTests(unittest.TestCase):
 
     def test_FilemanTemplateDisplayers(self):
         self.vista.write('..FMTI')
-        self.vista.wait('INPUT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('XU KSP INIT')
         self.vista.wait('LIFETIME OF VERIFY CODE')
-        self.vista.wait('INPUT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('')
         self.assertTrue(self.vista.wait('>>'))
 
         self.vista.write('..FMTP')
-        self.vista.wait('PRINT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('XUSERINQ')
+        self.vista.wait('CHOOSE')
+        self.vista.write('1')
         self.vista.wait('CPRS TAB:TAB DESCRIPTION')
-        self.vista.wait('PRINT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('')
         self.assertTrue(self.vista.wait('>>'))
 
         self.vista.write('..FMTS')
-        self.vista.wait('SORT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('PSO INTERVENTIONS')
         self.vista.wait('User is asked range')
-        self.vista.wait('SORT TEMPLATE')
+        self.vista.wait('Select TEMPLATE')
         self.vista.write('')
         self.assertTrue(self.vista.wait('>>'))
 
